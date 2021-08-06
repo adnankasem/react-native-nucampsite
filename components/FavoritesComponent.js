@@ -7,6 +7,7 @@ import { baseUrl } from '../shared/baseUrl';
 import { SwipeRow } from 'react-native-swipe-list-view';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { deleteFavorite } from '../redux/ActionCreators';
+import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {
     return {
@@ -34,24 +35,26 @@ class Favorites extends Component {
                         <TouchableOpacity 
                             style={styles.deleteTouchable}
                             onPress={() => 
-                                Alert.alert(
+                            Alert.alert(
                                     'Delete Favorite?',
                                     'Are you sure you want to delete the favorite campsite ' +
                                     item.name + 
                                     '?',
-                                    [
-                                        {
-                                            text: 'Cancel',
-                                            onPress: () => console.log(item.name + 'Not Deleted'),
-                                            style: 'cancel'
-                                        },
-                                        {
-                                            text: 'OK',
-                                            onPress: () => this.props.deleteFavorite(item.id)
-                                        },
-                                        { cancelable: false }
-                                    ]
+                                [
+                                    {
+                                        text: 'Cancel',
+                                        onPress: () => console.log(item.name + 'Not Deleted'),
+                                        style: 'cancel'
+                                    },
+                                    {
+                                        text: 'OK',
+                                        onPress: () => this.props.deleteFavorite(item.id)
+                                    },
+                                ],
+                                    { cancelable: false }
+                                
                                 )
+                            }
 
                         >
                             <Text style={styles.deleteText}>Delete</Text>
@@ -81,13 +84,15 @@ class Favorites extends Component {
             );
         }
         return (
-            <FlatList 
-                data={this.props.campsites.campsites.filter(
-                    campsite => this.props.favorites.includes(campsite.id)
-                )}
-                renderItem={rederFavoriteItem}
-                keyExtractor={ListItem.id.toString()}
-            />
+            <Animatable.View animation='fadeInRightBig' duration={2000}>
+                <FlatList 
+                    data={this.props.campsites.campsites.filter(
+                        campsite => this.props.favorites.includes(campsite.id)
+                    )}
+                    renderItem={rederFavoriteItem}
+                    keyExtractor={ListItem.id.toString()}
+                />
+            </Animatable.View>
         )
     }
 }
