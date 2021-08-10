@@ -89,7 +89,7 @@ class Favorites extends Component {
                     data={this.props.campsites.campsites.filter(
                         campsite => this.props.favorites.includes(campsite.id)
                     )}
-                    renderItem={rederFavoriteItem}
+                    renderItem={renderFavoriteItem}
                     keyExtractor={ListItem.id.toString()}
                 />
             </Animatable.View>

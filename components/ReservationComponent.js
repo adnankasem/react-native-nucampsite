@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, ScrollView,StyleSheet, 
     Picker, Switch, Button, Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import * as Animatable from 'react-native-animatable';
 
 class Reservation extends Component {
 
@@ -29,20 +30,47 @@ class Reservation extends Component {
 
     handleReservation() {
         console.log(JSON.stringify(this.state));
-        this.toggleModal();
+        const message = `Number of Campers: ${this.state.campers}
+                        /nHike-In? ${this.state.hikeIn}
+                        /nDate: ${this.state.date.toLocaleDateString('en-US')}`;
+        Aleret.alert(
+            'Begin Search?',
+            message,
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => {
+                        console.log('Reservation Search Canceled');
+                        this.resetForm();
+                    },
+                    style: 'cancel'
+                },
+                {
+                    text: 'OK',
+                    onPress: () => {this.resetForm()}
+                }
+            ],
+            { cancelable: false}
+        );
     }
 
     resetForm() {
         this.setState({
             campers: 1,
             hikeIn: false,
-            date: new Date()
+            date: new Date(),
+            showCalendar: false
         });
     }
 
     render() {
         return (
             <ScrollView>
+                <Animatable.view 
+                    animation='zoomIn'
+                    duration={2000} 
+                    delay={1000}
+                >
                 <View style={styles.formRow}>
                     <Text style={styles.formLabel}>Number of Campers</Text>
                     <Picker 
@@ -124,6 +152,7 @@ class Reservation extends Component {
                         />
                     </View>
                 </Modal>
+                </Animatable.view>
             </ScrollView>
         )
     }

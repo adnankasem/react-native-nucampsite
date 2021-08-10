@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import{ Text, View, ScrollView, FlatList,
      Modal, Button, StyleSheet,
     Alert, PanResponder } from 'react-native';
-import { Card, Icon } from 'react-native-elements';
+import { Card, Icon, Input, Rating } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postFavorite } from '../redux/ActionCreators';
@@ -29,6 +29,7 @@ function RenderCampsite(props) {
 
     const view = React.createRef();
 
+    const recognizeComment = ({dx}) => (dx > 200) ? true : false;
 
     const recognizeDrag = ({dx}) => (dx < -200) ? true : false;
 
@@ -58,6 +59,8 @@ function RenderCampsite(props) {
                     ],
                     { cancelable: false }
                 )
+            } else if (recognizeComment(gestureState)) {
+                toggleModal()
             }
             return true;
         }
@@ -151,6 +154,7 @@ class CampsiteInfo extends Component {
 
     handleComment(campsiteId) {
         console.log(this.state.JSON.stringify());
+        this.props.postComment(campsiteId, this.state.text, this.state.rating, this.state.author )
         toggleModal()
     }
 
@@ -179,7 +183,8 @@ class CampsiteInfo extends Component {
         const comments = this.props.comments.comments.filter(comment => comment.campsiteId === campsiteId);
         return(
             <ScrollView>
-                <RenderCampsite campsite={campsite} 
+                <RenderCampsite 
+                    campsite={campsite} 
                     favorite={this.props.favorites.includes(campsiteId)}
                     markFavorite={() => this.markFavorite(campsiteId)}
                     onShowModal={() => this.toggleModal()}
@@ -197,10 +202,10 @@ class CampsiteInfo extends Component {
                         onFinishRating={rating => this.setState({rating: rating})} style={{paddingVertical: 10}}
                     />
                     <Input
-                        placeholder='Author' leftIcon={{type: 'font-awesome', name: 'user-o'}} leftIconContainerStyle={{paddingRight: 10}} onChangeText={author => this.setState({author: author})}
+                        placeholder='Author' leftIcon={{type: 'font-awesome', name: 'user-o'}} leftIconContainerStyle={{paddingRight: 10}} value={this.state.author} onChangeText={author => this.setState({author: author})}
                     />
                     <Input
-                        placeholder='Comment' leftIcon={{type: 'font-awesome', name: 'comment-o'}} leftIconContainerStyle={{paddingRight: 10}} onChangeText={text => this.setState({text: text})}
+                        placeholder='Comment' leftIcon={{type: 'font-awesome', name: 'comment-o'}} leftIconContainerStyle={{paddingRight: 10}} value={this.state.text} onChangeText={text => this.setState({text: text})}
                     />
                         <View>
                             <Button 
